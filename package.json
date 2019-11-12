@@ -1,0 +1,49 @@
+{
+  "name": "base-service",
+  "version": "1.0.0",
+  "author": "Fernando Vera",
+  "scripts": {
+    "debug": "export SLS_DEBUG=* && node --inspect=5858 ./node_modules/.bin/serverless offline start --migrate",
+    "start": "sls offline start --migrate",
+    "start:test": "sls offline start --migrate --exec 'yarn test'",
+    "test": "jest -i",
+    "deploy": "sls deploy --stage dev",
+    "deploy:staging": "sls deploy --env staging",
+    "deploy:production": "sls deploy --env production"
+  },
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "http-status": "^1.3.1",
+    "jsonschema": "^1.2.4",
+    "pino": "^5.11.2",
+    "serverless-plugin-warmup": "^4.5.3-rc.1",
+    "source-map-support": "^0.5.10",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.17",
+    "@types/jest": "^23.0.1",
+    "@types/node": "^10.12.18",
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.2",
+    "eslint": "^5.15.3",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.4.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "jest": "^23.0.1",
+    "prettier": "^1.16.4",
+    "serverless": "^1.41.1",
+    "serverless-domain-manager": "^3.2.1",
+    "serverless-dotenv-plugin": "^2.0.1",
+    "serverless-dynamodb-client": "^0.0.2",
+    "serverless-dynamodb-local": "^0.2.37",
+    "serverless-offline": "^4.9.4",
+    "serverless-webpack": "^5.3.1",
+    "ts-jest": "^23.0.1",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.4",
+    "webpack": "^4.29.0"
+  }
+}

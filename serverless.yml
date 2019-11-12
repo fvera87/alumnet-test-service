@@ -1,0 +1,54 @@
+service: base
+
+plugins:
+  - serverless-domain-manager
+  - serverless-dotenv-plugin
+  - serverless-dynamodb-local
+  - serverless-webpack
+  - serverless-offline
+  - serverless-plugin-warmup
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${env:STAGE}
+  region: ${env:REGION}
+  iamRoleStatements:
+  - Effect: 'Allow'
+    Action:
+      - 'lambda:InvokeFunction'
+    Resource: "*"
+
+functions:
+  hello:
+    warmup: ${env:WARM_UP}
+    handler: src/controllers/entity/controller.handler
+
+resources:
+  Resources:
+    BaseTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${env:DB_TABLE}
+
+custom:
+  customDomain:
+    domainName: '${env:STAGE}.${env:API_DOMAIN}'
+    basePath: ${env:BASE_PATH}
+    stage: ${env:STAGE}
+    createRoute53Record: true
+  webpack:
+    webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
+    includeModules: false   # Node modules configuration for packaging
+    packager: 'yarn'   # Packager that will be used to package your external modules
+    excludeFiles: src/**/*.test.ts # Provide a glob for files to ignore
