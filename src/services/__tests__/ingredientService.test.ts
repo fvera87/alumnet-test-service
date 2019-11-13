@@ -1,3 +1,3 @@
-import {} from '../cocktailsService';
+import {} from '../cocktailService';
 
 describe('cocktails service tests', () => {});

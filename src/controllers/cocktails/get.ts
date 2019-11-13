@@ -1,5 +1,6 @@
 import * as Logger from 'pino';
 import * as status from 'http-status';
+import 'source-map-support/register';
 // eslint-disable-next-line no-unused-vars
 import { Context } from 'aws-lambda';
 // eslint-disable-next-line no-unused-vars
@@ -20,7 +21,7 @@ export async function handler(event: any, context: Context): Promise<Response> {
     return generateResponse(status.OK, { message: 'Lambda is warm!' });
   }
   try {
-    if (!event.queryStringParameters || event.queryStringParameters.ingredient)
+    if (!event.queryStringParameters || !event.queryStringParameters.ingredient)
       return generateErrorResponse(status.BAD_REQUEST, 'missing required parameter: Ingredient');
     const { ingredient } = event.queryStringParameters;
     const cleanIngredient = stringCleaner(ingredient);
