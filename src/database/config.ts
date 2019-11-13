@@ -1,28 +1,37 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
-// eslint-disable-next-line no-unused-vars
-import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { DynamoDB } from 'aws-sdk';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import {
+  // eslint-disable-next-line no-unused-vars
+  DocumentClient,
+} from 'aws-sdk/clients/dynamodb';
 
-export const initDynamoClient = (): DocumentClient => {
+let dynamoClient: DocumentClient = null;
+
+export function getDynamoClient(): DocumentClient {
+  if (dynamoClient) return dynamoClient;
   const isOffline =
     (process.env.IS_OFFLINE && process.env.IS_OFFLINE === 'true') ||
     (process.env.NODE_ENV && process.env.NODE_ENV === 'test');
 
   // If running locally or testing
   if (isOffline) {
-    return new DynamoDB.DocumentClient({
+    dynamoClient = new DynamoDB.DocumentClient({
       region: 'localhost',
       endpoint: 'http://localhost:8000',
     });
+    return dynamoClient;
   }
 
-  return new DynamoDB.DocumentClient();
-};
+  dynamoClient = new DynamoDB.DocumentClient();
+  return dynamoClient;
+}
 
-export const clearTable = async (tableName: string, key: string = 'id') => {
-  const dynamoDB = initDynamoClient();
+export async function clearTable(
+  tableName: string = process.env.DB_COCKTAILS_TABLE,
+  key: string = 'ingredientName',
+): Promise<void> {
+  const dynamoDB = getDynamoClient();
   const params = { TableName: tableName, Key: {} };
   const data = await dynamoDB.scan(params).promise();
   if (!data) return;
@@ -31,4 +40,4 @@ export const clearTable = async (tableName: string, key: string = 'id') => {
     return dynamoDB.delete(params).promise();
   });
   await Promise.all(promises);
-};
+}

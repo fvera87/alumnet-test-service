@@ -1,16 +1,15 @@
 import * as Logger from 'pino';
 import * as status from 'http-status';
-import 'source-map-support/register';
 // eslint-disable-next-line no-unused-vars
 import { Context } from 'aws-lambda';
-// eslint-disable-next-line no-unused-vars
-import { Response } from '../../interfaces/Response';
 import { generateErrorResponse, generateResponse } from '../../helpers/responseHandler';
-// eslint-disable-next-line no-unused-vars
-import { Cocktail } from '../../interfaces/Cocktail';
 import { fetchCocktailsForIngredient } from '../../services/cocktailService';
 import { stringCleaner } from '../../helpers/stringCleaner';
 import { fetchIngredientSuggestion } from '../../services/ingredientService';
+// eslint-disable-next-line no-unused-vars
+import { Response } from '../../interfaces/Response';
+// eslint-disable-next-line no-unused-vars
+import { Cocktail } from '../../interfaces/Cocktail';
 
 const logger = Logger();
 
