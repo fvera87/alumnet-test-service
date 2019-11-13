@@ -12,12 +12,12 @@ export async function handler(_: any, context: Context): Promise<void> {
   context.callbackWaitsForEmptyEventLoop = false; // eslint-disable-line
   try {
     const ingredients: string[] = await fetchIngredientsList();
-    const p1 = updateAllIngredientsList(ingredients);
-    const p2 = ingredients.map(async i => {
+    const promises: Promise<void>[] = ingredients.map(async i => {
       const cocktailsForCurrentIngredient: Cocktail[] = await fetchCocktailsForIngredient(i);
       return updateCocktailsListForIngredient(i, cocktailsForCurrentIngredient);
     });
-    await Promise.all([p1].concat(p2));
+    promises.push(updateAllIngredientsList(ingredients));
+    await Promise.all(promises);
   } catch (e) {
     logger.error(e);
     throw e; // throw error so the lambda call is repeated
