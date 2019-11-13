@@ -1,7 +1,6 @@
-service: base
+service: alumnet-test
 
 plugins:
-  - serverless-domain-manager
   - serverless-dotenv-plugin
   - serverless-dynamodb-local
   - serverless-webpack
@@ -10,7 +9,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   stage: ${env:STAGE}
   region: ${env:REGION}
   iamRoleStatements:
@@ -20,9 +19,14 @@ provider:
     Resource: "*"
 
 functions:
-  hello:
+  get-cocktails:
     warmup: ${env:WARM_UP}
-    handler: src/controllers/entity/controller.handler
+    handler: src/controllers/cocktails/get.handler
+    events:
+      - http:
+          path: cocktails
+          method: get
+          cors: true
 
 resources:
   Resources:

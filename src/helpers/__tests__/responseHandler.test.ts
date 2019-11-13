@@ -10,7 +10,7 @@ describe('generateErrorResponse helper', () => {
   it('should match', () => {
     const res = {
       statusCode: 400,
-      body: { errorMessage: 'Bad request' },
+      body: JSON.stringify({ errorMessage: 'Bad request' }),
     };
     const error = generateErrorResponse(400, 'Bad request');
     expect(error).toEqual(res);
@@ -27,7 +27,7 @@ describe('generateResponse helper', () => {
   it('should match', () => {
     const res = {
       statusCode: 200,
-      body: { user: { id: 'userId' } },
+      body: JSON.stringify({ user: { id: 'userId' } }),
     };
     const error = generateResponse(200, { user: { id: 'userId' } });
     expect(error).toEqual(res);
