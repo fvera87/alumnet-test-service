@@ -20,6 +20,6 @@ export async function fetchCocktailsForIngredient(ingredient: string): Promise<C
     params,
     headers,
   });
-  if (status === 200) return <Cocktail[]>data;
+  if (status === 200) return <Cocktail[]>data.drinks;
   throw new Error(`Something went wrong fetching cocktails: statusCode: ${status} - data: ${data}`);
 }
