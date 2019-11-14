@@ -3,7 +3,7 @@ import { fetchIngredientsList } from '../helpers/cocktailAPIClient';
 import { getAllIngredientsList, putAllIngredientsList } from '../database/cocktailsRepository';
 
 export async function fetchIngredientSuggestion(ingredient: string): Promise<string> {
-  if (!ingredient) throw new Error('ingredient missing');
+  if (!ingredient || typeof ingredient !== 'string') throw new Error('ingredient missing');
   let ingredientsList: string[] = await getAllIngredientsList();
   if (!ingredientsList || ingredientsList.length === 0) {
     ingredientsList = await fetchIngredientsList();
