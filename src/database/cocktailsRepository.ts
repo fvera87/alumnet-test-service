@@ -51,7 +51,7 @@ export async function updateAllIngredientsList(ingredients: string[]): Promise<v
   } catch (e) {
     if (e.message === 'The conditional request failed') {
       // this means that it is the first time we try to update, so we actually need to put
-      await putAllIngredientsList(ingredients);
+      return putAllIngredientsList(ingredients);
     }
     throw e;
   }
@@ -117,7 +117,7 @@ export async function updateCocktailsListForIngredient(ingredient: string, cockt
   } catch (e) {
     if (e.message === 'The conditional request failed') {
       // this means that it is the first time we try to update, so we actually need to put
-      await putCocktailsListForIngredient(ingredient, cocktails);
+      return putCocktailsListForIngredient(ingredient, cocktails);
     }
     throw e;
   }
