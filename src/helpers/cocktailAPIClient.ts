@@ -19,11 +19,14 @@ export async function fetchIngredientsList(): Promise<string[]> {
     headers,
   });
   if (status !== 200)
-    throw new Error(`Something went wrong fetching list of ingredients: statusCode: ${status} - data: ${data}`);
+    throw new Error(
+      `Something went wrong fetching list of ingredients: statusCode: ${status} - data: ${JSON.stringify(data)}`,
+    );
   return data.drinks.map(({ strIngredient1 }) => strIngredient1);
 }
 
 export async function fetchCocktailsForIngredient(ingredient: string): Promise<Cocktail[]> {
+  if (!ingredient || typeof ingredient !== 'string') throw new Error('ingredient missing');
   const headers = {};
   headers[COCKTAIL_HEADERS_KEY_HOST] = COCKTAIL_HEADERS_VALUE_HOST;
   headers[COCKTAIL_HEADERS_KEY_API_KEY] = COCKTAIL_HEADERS_VALUE_API_KEY;
@@ -33,6 +36,7 @@ export async function fetchCocktailsForIngredient(ingredient: string): Promise<C
     params,
     headers,
   });
-  if (status !== 200) throw new Error(`Something went wrong fetching cocktails: statusCode: ${status} - data: ${data}`);
+  if (status !== 200)
+    throw new Error(`Something went wrong fetching cocktails: statusCode: ${status} - data: ${JSON.stringify(data)}`);
   return <Cocktail[]>data.drinks || [];
 }
