@@ -6,8 +6,6 @@ import { handler } from '../get';
 import { Response } from '../../../interfaces/Response';
 // eslint-disable-next-line no-unused-vars
 import { Cocktail } from '../../../interfaces/Cocktail';
-import { clearTable } from '../../../database/config';
-import { fetchCocktailsForIngredient } from '../../../helpers/cocktailAPIClient';
 
 const mockedCoktail: Cocktail = {
   idDrink: 'id',
@@ -26,9 +24,6 @@ describe('fetch cocktails controller tests', () => {
   // @ts-ignore
   const context: Context = {};
   const cocktails = [mockedCoktail];
-  beforeEach(async () => {
-    clearTable(process.env.DB_COCKTAILS_TABLE);
-  });
   it('should return 400 error if the input does not have there are no query string params or ingredients is missing', async () => {
     const event = {};
     const expected: Response = {
@@ -47,36 +42,20 @@ describe('fetch cocktails controller tests', () => {
   it('should return 200 and the list of cocktails if provided ingredient has some', async () => {
     const ingredient = 'existing';
     const event = { queryStringParameters: { ingredient } };
-    const expected = {
+    const expected: Response = {
       statusCode: status.OK,
-      body: { cocktails },
+      body: JSON.stringify({ cocktails }),
     };
-    const result = await handler(event, context);
-    expect(Object.keys(result)).toEqual(['statusCode', 'body']);
-    expect(result.statusCode).toEqual(expected.statusCode);
-    expect(JSON.parse(result.body)).toEqual(expected.body);
+    await expect(handler(event, context)).resolves.toEqual(expected);
   });
   it('should return 200 an empty list of cocktails if provided ingredient does not have any, with a suggested ingredient', async () => {
     const ingredient = 'notexisting';
     const event = { queryStringParameters: { ingredient } };
-    const expected = {
+    const expected: Response = {
       statusCode: status.OK,
-      body: { cocktails: [], suggestion },
+      body: JSON.stringify({ cocktails: [], suggestion }),
     };
     const result = await handler(event, context);
-    expect(Object.keys(result)).toEqual(['statusCode', 'body']);
-    expect(result.statusCode).toEqual(expected.statusCode);
-    expect(JSON.parse(result.body)).toEqual(expected.body);
-  });
-  it('should always hit the DB after the first call', async () => {
-    const ingredient = 'existing';
-    const event = { queryStringParameters: { ingredient } };
-    await handler(event, context);
-    expect(fetchCocktailsForIngredient).toHaveBeenCalledWith(ingredient);
-    expect(fetchCocktailsForIngredient).toHaveBeenCalledTimes(1);
-    await handler(event, context);
-    expect(fetchCocktailsForIngredient).toHaveBeenCalledTimes(1);
-    await handler(event, context);
-    expect(fetchCocktailsForIngredient).toHaveBeenCalledTimes(1);
+    await expect(result).toEqual(expected);
   });
 });

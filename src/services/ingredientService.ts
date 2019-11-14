@@ -5,8 +5,9 @@ import { getAllIngredientsList, putAllIngredientsList } from '../database/cockta
 export async function fetchIngredientSuggestion(ingredient: string): Promise<string> {
   if (!ingredient) throw new Error('ingredient missing');
   let ingredientsList: string[] = await getAllIngredientsList();
-  if (!ingredientsList) {
+  if (!ingredientsList || ingredientsList.length === 0) {
     ingredientsList = await fetchIngredientsList();
+    if (!ingredientsList || ingredientsList.length === 0) throw new Error('Error fetching possible ingredients');
     await putAllIngredientsList(ingredientsList);
   }
   const {

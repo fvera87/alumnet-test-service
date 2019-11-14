@@ -20,6 +20,11 @@ export async function handler(_: any, context: Context): Promise<void> {
     await Promise.all(promises);
   } catch (e) {
     logger.error(e);
-    throw e; // throw error so the lambda call is repeated
+    /*
+    throwing an error makes the lambda to be call again. This is some rudimentary error handling in case something happens (e.g. cocktails API is down)
+    There could be better error handling (configure some cloudwatch alarm to throw a message to sns topic, for example, and then deal with it) 
+    but it probably excesses the scope of this test. 
+     */
+    throw e;
   }
 }

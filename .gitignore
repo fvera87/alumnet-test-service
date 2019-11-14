@@ -17,5 +17,6 @@ jspm_packages
 #webpack
 .webpack
 
-# yarn.lock
+# yarn
 yarn.lock
+yarn-error.log

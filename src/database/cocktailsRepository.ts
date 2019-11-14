@@ -23,6 +23,7 @@ export async function putAllIngredientsList(ingredients: string[]): Promise<void
   const input: PutItemInputAttributeMap = {
     ingredientName: <AttributeValue>ALL_INGREDIENTS_LIST_KEY,
     ingredients: <AttributeValue>ingredients,
+    updatedAt: <AttributeValue>new Date(Date.now()).toISOString(),
   };
   const params: PutItemInput = {
     TableName: process.env.DB_COCKTAILS_TABLE,
@@ -39,9 +40,10 @@ export async function updateAllIngredientsList(ingredients: string[]): Promise<v
       Key: {
         ingredientName: <AttributeValue>ALL_INGREDIENTS_LIST_KEY,
       },
-      UpdateExpression: 'set ingredients = :ingredients',
+      UpdateExpression: 'set ingredients = :ingredients, updatedAt = :updatedAt',
       ExpressionAttributeValues: {
         ':ingredients': <AttributeValue>ingredients,
+        ':updatedAt': <AttributeValue>new Date(Date.now()).toISOString(),
       },
       ConditionExpression: 'attribute_exists(ingredientName)', // this way we check that the first time this will be checked throws a known error
     };
@@ -63,7 +65,7 @@ export async function getAllIngredientsList(): Promise<string[]> {
     },
   };
   const { Item } = await dynamoDB.get(params).promise();
-  return <string[]>Item.ingredients || [];
+  return Item ? <string[]>Item.ingredients : [];
 }
 
 export async function putCocktailsListForIngredient(ingredient: string, cocktails: Cocktail[]): Promise<void> {
@@ -73,7 +75,7 @@ export async function putCocktailsListForIngredient(ingredient: string, cocktail
   const input: PutItemInputAttributeMap = {
     ingredientName: <AttributeValue>ingredient,
     cocktails: <AttributeValue>cocktails,
-    updatedAt: <AttributeValue>Date.now(),
+    updatedAt: <AttributeValue>new Date(Date.now()).toISOString(),
   };
   const params: PutItemInput = {
     TableName: process.env.DB_COCKTAILS_TABLE,
@@ -90,8 +92,8 @@ export async function getCocktailsListForIngredient(ingredient: string): Promise
       ingredientName: <AttributeValue>ingredient,
     },
   };
-  const { Item: cocktails } = await dynamoDB.get(params).promise();
-  return <Cocktail[]>cocktails;
+  const { Item } = await dynamoDB.get(params).promise();
+  return Item ? <Cocktail[]>Item.cocktails : [];
 }
 
 export async function updateCocktailsListForIngredient(ingredient: string, cocktails: Cocktail[]): Promise<void> {
@@ -104,9 +106,10 @@ export async function updateCocktailsListForIngredient(ingredient: string, cockt
       Key: {
         ingredientName: <AttributeValue>ingredient,
       },
-      UpdateExpression: 'set cocktails = :cocktails',
+      UpdateExpression: 'set cocktails = :cocktails, updatedAt = :updatedAt',
       ExpressionAttributeValues: {
         ':cocktails': <AttributeValue>cocktails,
+        ':updatedAt': <AttributeValue>new Date(Date.now()).toISOString(),
       },
       ConditionExpression: 'attribute_exists(ingredientName)',
     };

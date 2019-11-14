@@ -7,7 +7,7 @@ import { getCocktailsListForIngredient, putCocktailsListForIngredient } from '..
 export async function fetchCocktailsForIngredient(ingredient: string): Promise<Cocktail[]> {
   if (!ingredient) throw new Error('ingredient missing');
   let cocktails: Cocktail[] = await getCocktailsListForIngredient(ingredient);
-  if (!cocktails) {
+  if (!cocktails || cocktails.length === 0) {
     cocktails = await fetchCocktailsForIngredientAPI(ingredient);
     await putCocktailsListForIngredient(ingredient, cocktails);
   }
